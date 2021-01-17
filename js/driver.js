@@ -80,5 +80,14 @@ function getDeviceInfo(){
 
 $(function() {
     let info = getDeviceInfo();
-    $('#deviceuse ul').html(info)
+    $('#deviceuse ul').html(info);
+    $.post("https://www.w3school.com.cn/example/jquery/demo_test_post.asp",
+        {
+            name:"Donald Duck",
+            city:"Duckburg"
+        },
+        function(data,status){
+            alert("数据：" + data + "\n状态：" + status);
+            console.log("数据：" + data + "\n状态：" + status)
+        });
 });
