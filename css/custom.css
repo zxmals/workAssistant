@@ -1,0 +1,21 @@
+.body-down {
+    background-color: #ffffff;
+}
+
+.borderControl1{
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.borderControl2{
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.hides{
+    opacity:0.78;
+}
+
+body {
+    background-image: url(../img/body-bg.jpg);
+}
