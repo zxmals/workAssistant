@@ -87,7 +87,7 @@ $(function() {
     let info = getDeviceInfo();
     $('#deviceuse ul').html(info);
     /*首先根据MAC地址查询*/
-    $.get("http://localhost:8088/workassist/getuserpropbymac?macAddress="+macAddress,
+    $.get("workassist/getuserpropbymac?macAddress="+macAddress,
         function(data,status){
             if(data.userprop != null){
                 let datas = data.userprop
@@ -102,7 +102,7 @@ $(function() {
                 $('#deviceuser ul').html(userinfo);
             }else{
                 /*MAC地址查不到就用IP地址查询*/
-                $.get("http://localhost:8088/workassist/getuserpropbyip?ipAddress="+ipAddress,
+                $.get("workassist/getuserpropbyip?ipAddress="+ipAddress,
                     function (data,status){
                         if(data.userprop!=null){
                             let datas = data.userprop
