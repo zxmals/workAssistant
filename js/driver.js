@@ -14,6 +14,9 @@ $(document).ready(function(){
 /*设备信息页*/
 let locator = new ActiveXObject ("WbemScripting.SWbemLocator");
 let service = locator.ConnectServer(".");
+let macAddress = "";
+let ipAddress = "";
+
 
 /*CPU 信息*/
 function cpuInfo() {
@@ -61,7 +64,9 @@ function ipInfo(){
     for (;!e.atEnd();e.moveNext ()){
         let p = e.item ();
         info+='<li class="list-group-item">MAC地址：' + p.MACAddress + '</li>';
+        macAddress = p.MACAddress;
         info+='<li class="list-group-item">IP地址：' + p.IPAddress(0) + '</li>';
+        ipAddress = p.IPAddress(0);
     }
     return info;
 }
@@ -81,13 +86,40 @@ function getDeviceInfo(){
 $(function() {
     let info = getDeviceInfo();
     $('#deviceuse ul').html(info);
-    $.post("https://www.w3school.com.cn/example/jquery/demo_test_post.asp",
-        {
-            name:"Donald Duck",
-            city:"Duckburg"
-        },
+    /*首先根据MAC地址查询*/
+    $.get("http://localhost:8088/workassist/getuserpropbymac?macAddress="+macAddress,
         function(data,status){
-            alert("数据：" + data + "\n状态：" + status);
-            console.log("数据：" + data + "\n状态：" + status)
+            if(data.userprop != null){
+                let datas = data.userprop
+                let userinfo = "";
+                userinfo += '<li class="list-group-item">资产责任人：' + datas.user_name + '</li>';
+                userinfo += '<li class="list-group-item">员工编号：'+datas.user_id+'</li>';
+                userinfo += '<li class="list-group-item">归属部门：'+datas.department+'</li>';
+                userinfo += '<li class="list-group-item">资产编号：'+datas.property_id+'</li>';
+                userinfo += '<li class="list-group-item">资产申领日期：'+datas.prop_startdate+'</li>';
+                userinfo += '<li class="list-group-item">资产到期日期：'+datas.prop_enddate+'</li>';
+                userinfo += '<li class="list-group-item">...</li>';
+                $('#deviceuser ul').html(userinfo);
+            }else{
+                /*MAC地址查不到就用IP地址查询*/
+                $.get("http://localhost:8088/workassist/getuserpropbyip?ipAddress="+ipAddress,
+                    function (data,status){
+                        if(data.userprop!=null){
+                            let datas = data.userprop
+                            let userinfo = "";
+                            userinfo += '<li class="list-group-item">资产责任人：' + datas.user_name + '</li>';
+                            userinfo += '<li class="list-group-item">员工编号：'+datas.user_id+'</li>';
+                            userinfo += '<li class="list-group-item">归属部门：'+datas.department+'</li>';
+                            userinfo += '<li class="list-group-item">资产编号：'+datas.property_id+'</li>';
+                            userinfo += '<li class="list-group-item">资产申领日期：'+datas.prop_startdate+'</li>';
+                            userinfo += '<li class="list-group-item">资产到期日期：'+datas.prop_enddate+'</li>';
+                            userinfo += '<li class="list-group-item">...</li>';
+                            $('#deviceuser ul').html(userinfo);
+                        }else{
+                            let userinfo = "无法查询当前设备对应用户信息！";
+                            $('#deviceuser ul').html(userinfo);
+                        }
+                });
+            }
         });
 });
